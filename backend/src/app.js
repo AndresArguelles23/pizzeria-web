@@ -1,6 +1,5 @@
-// backend/src/app.js
+// backend/src/app.js (actualizado para múltiples orígenes)
 const express = require("express");
-const path = require("path");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const uploadRoutes = require("./routes/uploadRoutes");
@@ -14,10 +13,21 @@ connectDB();
 
 const app = express();
 
-// Configurar CORS para permitir solicitudes desde el frontend
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://courageous-moonbeam-7aa0b7.netlify.app"
+];
+
 app.use(cors({
-    origin: "http://localhost:3000",
-    optionsSuccessStatus: 200
+  origin: function(origin, callback) {
+    // Permitir solicitudes sin origen (como en mobile o curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error("CORS: Origen no permitido"), false);
+    }
+    return callback(null, true);
+  },
+  optionsSuccessStatus: 200
 }));
 
 app.use(express.json());
