@@ -3,7 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Registro de usuario (permanece igual)
+// Registro de usuario
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, addresses } = req.body;
@@ -34,7 +34,6 @@ const loginUser = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Credenciales inválidas" });
     }
-    // Generar el token con el JWT_SECRET definido en .env
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -50,7 +49,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Obtener perfil de usuario (permanece igual)
+// Obtener perfil de usuario
 const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password");
@@ -60,6 +59,7 @@ const getUserProfile = async (req, res) => {
     res.status(500).json({ message: "Error al obtener perfil", error: error.message });
   }
 };
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -70,5 +70,3 @@ const getAllUsers = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, getUserProfile, getAllUsers };
-
-

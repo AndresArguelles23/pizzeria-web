@@ -1,3 +1,4 @@
+// frontend/src/pages/Login.jsx
 import React, { useState, useContext } from "react";
 import {
   Box,
@@ -10,7 +11,7 @@ import {
   FormControlLabel,
   Checkbox,
   IconButton,
-  InputAdornment
+  InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import api from "../services/api";
@@ -35,9 +36,9 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post("/users/login", { email, password });
+      // Llamada al endpoint: /api/users/login
+      const res = await api.post("/api/users/login", { email, password });
       setToken(res.data.token);
-      // Si "remember me" está activo, podrías guardar el token en localStorage; de lo contrario, en sessionStorage
       if (remember) {
         localStorage.setItem("token", res.data.token);
       } else {
