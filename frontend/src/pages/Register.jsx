@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
 import {
   Box,
   Button,
@@ -30,7 +30,8 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/users/register", { name, email, password });
+      // Uso del endpoint correcto con el prefijo "/api"
+      await api.post("/api/users/register", { name, email, password });
       setSnackbar({ open: true, message: "Usuario registrado exitosamente", severity: "success" });
       // Limpiar formulario
       setName("");

@@ -13,7 +13,6 @@ import {
   Select,
   MenuItem,
   Divider,
-  CircularProgress
 } from "@mui/material";
 import api from "../../services/api";
 
@@ -34,22 +33,19 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  // Cargar la lista de productos
   const fetchProducts = async () => {
     try {
-      const res = await api.get("/products");
+      const res = await api.get("/api/products");
       setProducts(res.data);
     } catch (error) {
       console.error("Error al obtener productos:", error);
     }
   };
 
-  // Maneja cambios en el formulario
   const handleInputChange = (e) => {
     setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
   };
 
-  // Función para subir imagen a Cloudinary
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -58,11 +54,9 @@ const AdminProducts = () => {
     setUploading(true);
     try {
       const token = localStorage.getItem("token");
-      // Importante: No forzar Content-Type, axios lo hace automáticamente
-      const res = await api.post("/upload", formData, {
+      const res = await api.post("/api/upload", formData, {
         headers: { Authorization: token }
       });
-      // Guarda la URL devuelta en el estado
       setNewProduct({ ...newProduct, imageUrl: res.data.imageUrl });
     } catch (error) {
       console.error("Error al subir imagen:", error);
@@ -72,7 +66,6 @@ const AdminProducts = () => {
     }
   };
 
-  // Crear un nuevo producto
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
@@ -82,11 +75,10 @@ const AdminProducts = () => {
         stock: Number(newProduct.stock)
       };
       const token = localStorage.getItem("token");
-      await api.post("/products", productData, {
+      await api.post("/api/products", productData, {
         headers: { Authorization: token }
       });
       alert("Producto creado");
-      // Reinicia el formulario
       setNewProduct({ name: "", price: "", category: "pizza", description: "", stock: 0, imageUrl: "" });
       fetchProducts();
     } catch (error) {
@@ -95,11 +87,10 @@ const AdminProducts = () => {
     }
   };
 
-  // Eliminar un producto
   const handleDeleteProduct = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await api.delete(`/products/${id}`, { headers: { Authorization: token } });
+      await api.delete(`/api/products/${id}`, { headers: { Authorization: token } });
       alert("Producto eliminado");
       fetchProducts();
     } catch (error) {
@@ -108,12 +99,10 @@ const AdminProducts = () => {
     }
   };
 
-  // Seleccionar producto para editar
   const handleEditProduct = (product) => {
     setEditingProduct(product);
   };
 
-  // Actualizar un producto existente
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     try {
@@ -123,7 +112,7 @@ const AdminProducts = () => {
         stock: Number(editingProduct.stock)
       };
       const token = localStorage.getItem("token");
-      await api.put(`/products/${editingProduct._id}`, updatedProduct, {
+      await api.put(`/api/products/${editingProduct._id}`, updatedProduct, {
         headers: { Authorization: token }
       });
       alert("Producto actualizado");
@@ -140,8 +129,6 @@ const AdminProducts = () => {
       <Typography variant="h4" gutterBottom>
         Gestionar Productos
       </Typography>
-
-      {/* Formulario para agregar producto */}
       <Paper sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom>
           Añadir Producto
@@ -180,10 +167,7 @@ const AdminProducts = () => {
           </Button>
         </Box>
       </Paper>
-
       <Divider sx={{ my: 3 }} />
-
-      {/* Lista de Productos */}
       <Typography variant="h5" gutterBottom>
         Lista de Productos
       </Typography>
@@ -197,15 +181,9 @@ const AdminProducts = () => {
                 <Box sx={{ width: "100%", height: "140px", bgcolor: "#e0e0e0", borderRadius: "4px" }} />
               )}
               <Typography variant="h6">{prod.name}</Typography>
-              <Typography variant="body1">
-                ${prod.price} - {prod.category}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Stock: {prod.stock}
-              </Typography>
-              {prod.description && (
-                <Typography variant="body2">{prod.description}</Typography>
-              )}
+              <Typography variant="body1">Precio: ${prod.price} - {prod.category}</Typography>
+              <Typography variant="body2" color="text.secondary">Stock: {prod.stock}</Typography>
+              {prod.description && (<Typography variant="body2">{prod.description}</Typography>)}
               <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
                 <Button variant="contained" color="secondary" onClick={() => handleDeleteProduct(prod._id)}>
                   Eliminar
@@ -218,30 +196,14 @@ const AdminProducts = () => {
           </Grid>
         ))}
       </Grid>
-
       {editingProduct && (
         <Paper sx={{ p: 3, mt: 4 }}>
           <Typography variant="h6" gutterBottom>
             Editar Producto
           </Typography>
           <Box component="form" onSubmit={handleUpdateProduct} sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-            <TextField
-              label="Nombre"
-              name="name"
-              value={editingProduct.name}
-              onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-              required
-              fullWidth
-            />
-            <TextField
-              label="Precio"
-              name="price"
-              type="number"
-              value={editingProduct.price}
-              onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-              required
-              fullWidth
-            />
+            <TextField label="Nombre" name="name" value={editingProduct.name} onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })} required fullWidth />
+            <TextField label="Precio" name="price" type="number" value={editingProduct.price} onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })} required fullWidth />
             <FormControl fullWidth>
               <InputLabel id="edit-category-label">Categoría</InputLabel>
               <Select
@@ -256,29 +218,11 @@ const AdminProducts = () => {
                 <MenuItem value="bebida">Bebida</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              label="Descripción"
-              name="description"
-              value={editingProduct.description}
-              onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Stock"
-              name="stock"
-              type="number"
-              value={editingProduct.stock}
-              onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })}
-              required
-              fullWidth
-            />
+            <TextField label="Descripción" name="description" value={editingProduct.description} onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })} fullWidth />
+            <TextField label="Stock" name="stock" type="number" value={editingProduct.stock} onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })} required fullWidth />
             <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-              <Button type="submit" variant="contained" color="primary">
-                Actualizar Producto
-              </Button>
-              <Button variant="outlined" onClick={() => setEditingProduct(null)}>
-                Cancelar
-              </Button>
+              <Button type="submit" variant="contained" color="primary">Actualizar Producto</Button>
+              <Button variant="outlined" onClick={() => setEditingProduct(null)}>Cancelar</Button>
             </Box>
           </Box>
         </Paper>

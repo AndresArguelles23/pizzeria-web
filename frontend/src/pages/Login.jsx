@@ -36,7 +36,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Llamada al endpoint: /api/users/login
+      // Llamada al endpoint correcto:
       const res = await api.post("/api/users/login", { email, password });
       setToken(res.data.token);
       if (remember) {

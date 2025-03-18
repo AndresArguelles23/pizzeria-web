@@ -7,7 +7,6 @@ const protect = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "No autorizado: Token faltante" });
   }
-  // Remover el prefijo "Bearer " (con espacio) y limpiar espacios
   if (token.startsWith("Bearer ")) {
     token = token.slice(7).trim();
   } else {
@@ -16,7 +15,8 @@ const protect = (req, res, next) => {
   console.log("Token recibido para verificación:", token);
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // se espera { userId, role }
+    // Asignamos de forma consistente el id a _id
+    req.user = { _id: decoded.userId || decoded.id, role: decoded.role };
     next();
   } catch (error) {
     console.error("Error en jwt.verify:", error);

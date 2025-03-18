@@ -1,4 +1,5 @@
-import React, { useState } from "react"; 
+// Cart.jsx
+import React, { useState } from "react";
 import {
   Container,
   Grid,
@@ -45,17 +46,21 @@ const Cart = () => {
     }));
     try {
       setCheckoutLoading(true);
-      await api.post("/orders", { products: orderProducts, totalPrice, paymentMethod: "prueba" });
+      // CORRECCIÓN: Agregamos "/api" antes de "/orders"
+      await api.post("/api/orders", {
+        products: orderProducts,
+        totalPrice,
+        paymentMethod: "prueba",
+      });
       setSnackbar({ open: true, message: "Pedido realizado con éxito!", severity: "success" });
       setTimeout(() => {
         clearCart();
-        
-      }, 2000); // Espera 2 segundos antes de redirigir
+      }, 2000); // Espera 2 segundos antes de limpiar
     } catch (error) {
       console.error("Error en el checkout:", error.response?.data || error.message);
       setSnackbar({
         open: true,
-        message: "Error al realizar el pedido: " + (error.response?.data.message || error.message),
+        message: "Error al realizar el pedido: " + (error.response?.data?.message || error.message),
         severity: "error",
       });
     } finally {
@@ -135,12 +140,7 @@ const Cart = () => {
               Total: {formatPrice(totalPrice)}
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-              <LoadingButton
-                variant="contained"
-                color="primary"
-                onClick={handleCheckout}
-                loading={checkoutLoading}
-              >
+              <LoadingButton variant="contained" color="primary" onClick={handleCheckout} loading={checkoutLoading}>
                 Realizar Pedido
               </LoadingButton>
               <Button variant="outlined" color="error" onClick={handleCancelOrder}>

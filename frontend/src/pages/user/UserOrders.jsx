@@ -1,3 +1,4 @@
+// frontend/src/pages/user/UserOrders.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { 
   Container, 
@@ -18,24 +19,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import api from "../../services/api";
 
-const getStatusChipColor = (status) => {
-  // Ejemplo simple: podrías mejorar esto usando Chip de MUI, pero aquí usamos solo colores
-  switch (status?.toLowerCase()) {
-    case "pendiente":
-      return "orange";
-    case "en preparación":
-      return "blue";
-    case "en camino":
-      return "purple";
-    case "entregado":
-      return "green";
-    case "cancelado":
-      return "red";
-    default:
-      return "gray";
-  }
-};
-
 const UserOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +31,7 @@ const UserOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await api.get("/orders");
+        const res = await api.get("/api/orders");
         console.log("Pedidos recibidos:", res.data);
         setOrders(res.data);
       } catch (error) {
@@ -61,7 +44,6 @@ const UserOrders = () => {
     fetchOrders();
   }, []);
 
-  // Filtrado: Busca en ID, estado, nombre del cliente y fecha
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const searchStr = (
@@ -77,7 +59,6 @@ const UserOrders = () => {
     });
   }, [orders, searchTerm]);
 
-  // Paginación: Calcula el total de páginas y extrae los pedidos de la página actual
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
   const paginatedOrders = useMemo(() => {
     const startIndex = (currentPage - 1) * ordersPerPage;
@@ -104,7 +85,7 @@ const UserOrders = () => {
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
-          setCurrentPage(1); // reinicia la página al cambiar la búsqueda
+          setCurrentPage(1);
         }}
       />
       {loading ? (
@@ -139,10 +120,7 @@ const UserOrders = () => {
                       <strong>Total:</strong> ${order.totalPrice}
                     </Typography>
                     <Typography variant="body2" sx={{ mt: 1, fontWeight: "bold" }}>
-                      Estado:{" "}
-                      <span style={{ color: getStatusChipColor(order.status) }}>
-                        {order.status || "Sin estado"}
-                      </span>
+                      Estado: {order.status || "Sin estado"}
                     </Typography>
                     <Collapse in={expandedOrders[order._id]} timeout="auto" unmountOnExit>
                       <Box sx={{ mt: 1 }}>

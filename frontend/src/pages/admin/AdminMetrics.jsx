@@ -1,3 +1,4 @@
+// AdminMetrics.jsx
 import React, { useState, useEffect } from "react";
 import { 
   Container, 
@@ -36,34 +37,35 @@ const AdminMetrics = () => {
     setLoading(true);
     setErrorMsg("");
     try {
+      // CORRECCIÓN: Agregamos "/api" antes de "/orders", "/products", "/users"
       const [ordersRes, productsRes, usersRes] = await Promise.all([
-        api.get("/orders"),
-        api.get("/products"),
-        api.get("/users"),
+        api.get("/api/orders"),
+        api.get("/api/products"),
+        api.get("/api/users"),
       ]);
 
       const orders = ordersRes.data;
       const products = productsRes.data;
       const users = usersRes.data;
-      
+
       const totalSales = orders.reduce((acc, order) => acc + order.totalPrice, 0);
 
+      // Preparar datos para la gráfica de ventas
       const salesByDate = {};
-      orders.forEach(order => {
+      orders.forEach((order) => {
         const date = new Date(order.createdAt).toISOString().split("T")[0];
         salesByDate[date] = (salesByDate[date] || 0) + order.totalPrice;
       });
-
       const salesChartData = Object.entries(salesByDate).map(([date, sales]) => ({
         date,
         sales,
       }));
 
+      // Preparar datos para la gráfica de estados
       const statusCount = orders.reduce((acc, order) => {
         acc[order.status] = (acc[order.status] || 0) + 1;
         return acc;
       }, {});
-
       const orderStatusChartData = Object.entries(statusCount).map(([status, count]) => ({
         name: status,
         value: count,
@@ -78,7 +80,6 @@ const AdminMetrics = () => {
 
       setOrdersData(salesChartData);
       setOrderStatusData(orderStatusChartData);
-
     } catch (error) {
       console.error("Error al obtener métricas:", error);
       setErrorMsg("Error al obtener métricas");
@@ -137,7 +138,12 @@ const AdminMetrics = () => {
                 <Paper elevation={4} sx={{ p: 3, textAlign: "center", borderRadius: 2, boxShadow: 5 }}>
                   <Typography variant="h6" fontWeight="bold">{label}</Typography>
                   <Typography variant="h5" fontWeight="bold">
-                    {formatNumber([stats.totalProducts, stats.totalOrders, stats.totalUsers, stats.totalSales][index])}
+                    {formatNumber([
+                      stats.totalProducts,
+                      stats.totalOrders,
+                      stats.totalUsers,
+                      stats.totalSales,
+                    ][index])}
                   </Typography>
                 </Paper>
               </motion.div>

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 const useCart = () => {
   const [cart, setCart] = useState([]);
 
-  // Cargar carrito desde localStorage al montar el hook
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(savedCart);

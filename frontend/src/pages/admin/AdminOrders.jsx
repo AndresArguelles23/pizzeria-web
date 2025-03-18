@@ -1,3 +1,4 @@
+// AdminOrders.jsx
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -36,7 +37,10 @@ const AdminOrders = () => {
         console.error("No hay token, usuario no autenticado");
         return;
       }
-      const res = await api.get("/orders", { headers: { Authorization: `Bearer ${token}` } });
+      // CORRECCIÓN: Agregamos "/api" antes de "/orders"
+      const res = await api.get("/api/orders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setOrders(res.data);
     } catch (error) {
       console.error("Error al obtener pedidos:", error);
@@ -59,11 +63,10 @@ const AdminOrders = () => {
         alert("No autorizado");
         return;
       }
-      await api.put(
-        `/orders/${orderId}`,
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // CORRECCIÓN: "/api/orders"
+      await api.put(`/api/orders/${orderId}`, { status: newStatus }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order._id === orderId ? { ...order, status: newStatus } : order
@@ -138,7 +141,7 @@ const AdminOrders = () => {
                       Fecha: {new Date(order.createdAt).toLocaleString()}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Total: ${order.totalPrice.toLocaleString("es-CO")}
+                      Total: ${order.totalPrice?.toLocaleString("es-CO")}
                     </Typography>
                     <Typography variant="body2" sx={{ mt: 1, fontWeight: "bold" }}>
                       Estado: {order.status}

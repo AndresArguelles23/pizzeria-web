@@ -1,8 +1,8 @@
 // frontend/src/components/ProtectedRoute.jsx
-
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const token = localStorage.getItem("token");
@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
     return <Navigate to="/login" replace />;
   }
   try {
-    const decoded = jwtDecode(token); // Se asume que el token contiene la propiedad 'role'
+    const decoded = jwtDecode(token);
     if (adminOnly && decoded.role !== "admin") {
       return <Navigate to="/" replace />;
     }

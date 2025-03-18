@@ -12,8 +12,8 @@ const AdminUsers = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      // Suponemos que existe un endpoint para obtener usuarios para admin
-      const res = await api.get("/admin/users", { headers: { Authorization: token } });
+      // Asumiendo que el endpoint para usuarios es "/api/users"
+      const res = await api.get("/api/users", { headers: { Authorization: `Bearer ${token}` } });
       setUsers(res.data);
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
@@ -32,7 +32,6 @@ const AdminUsers = () => {
               <p><strong>Nombre:</strong> {user.name}</p>
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>Rol:</strong> {user.role}</p>
-              {/* Se pueden agregar botones para actualizar rol o eliminar usuario */}
             </li>
           ))}
         </ul>

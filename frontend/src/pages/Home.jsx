@@ -14,6 +14,10 @@ import {
   Alert,
   ToggleButton,
   ToggleButtonGroup,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +33,10 @@ const Home = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
   const [category, setCategory] = useState("Todos");
 
+  // Estado para el modal de detalles del producto
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const { addItem } = useCart();
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -37,7 +45,7 @@ const Home = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        // Importante: Llama al endpoint con el prefijo "/api"
+        // Llama al endpoint con el prefijo "/api"
         const res = await api.get("/api/products");
         setProducts(res.data);
       } catch (error) {
@@ -62,6 +70,17 @@ const Home = () => {
     }
     addItem(product);
     setSnackbar({ open: true, message: `${product.name} agregado al carrito`, severity: "success" });
+  };
+
+  // Funciones para el modal de detalles
+  const handleOpenModal = (product) => {
+    setSelectedProduct(product);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedProduct(null);
   };
 
   return (
@@ -121,7 +140,7 @@ const Home = () => {
                       <Button
                         variant="contained"
                         startIcon={<VisibilityIcon />}
-                        onClick={() => navigate(`/producto/${product._id}`)}
+                        onClick={() => handleOpenModal(product)}
                         sx={{
                           background: "linear-gradient(135deg, #d32f2f, #ff6659)",
                           borderRadius: "6px",
@@ -170,6 +189,38 @@ const Home = () => {
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
         <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
       </Snackbar>
+
+      {selectedProduct && (
+  <Dialog
+  open={modalOpen}
+  onClose={handleCloseModal}
+  fullWidth
+  maxWidth="sm"
+  PaperProps={{ sx: { maxWidth: 400 } }} // Limita el ancho máximo a 400px
+>
+  <DialogTitle>{selectedProduct.name}</DialogTitle>
+  <DialogContent sx={{ maxHeight: "80vh" }}>
+    <Box
+      component="img"
+      src={selectedProduct.imageUrl || "https://via.placeholder.com/300?text=Sin+Imagen"}
+      alt={selectedProduct.name}
+      sx={{ width: "100%", maxHeight: 250, objectFit: "contain", borderRadius: "4px", mb: 2 }}
+    />
+    <Typography variant="body1" sx={{ mb: 2 }}>
+      {selectedProduct.description}
+    </Typography>
+    <Typography variant="h6">
+      Precio: {selectedProduct.price}
+    </Typography>
+    <Typography variant="body2" sx={{ mt: 1 }}>
+      Categoría: {selectedProduct.category}
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseModal}>Cerrar</Button>
+  </DialogActions>
+</Dialog>
+)}
     </Container>
   );
 };

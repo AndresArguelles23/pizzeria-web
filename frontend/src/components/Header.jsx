@@ -1,3 +1,4 @@
+// frontend/src/components/Header.jsx
 import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Button, Typography, Box } from "@mui/material";
@@ -11,7 +12,9 @@ import LoginIcon from "@mui/icons-material/Login";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { AuthContext } from "../context/AuthContext";
+
 import { jwtDecode } from "jwt-decode";
+
 import { motion } from "framer-motion";
 
 const Header = () => {
@@ -30,6 +33,8 @@ const Header = () => {
 
   const handleLogout = () => {
     setToken(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("cart"); // Limpiar carrito al logout
     window.location.href = "/";
   };
 
@@ -50,53 +55,30 @@ const Header = () => {
   });
 
   return (
-    <AppBar
-      position="static"
-      sx={{
-        background: "linear-gradient(135deg, #b71c1c, #d32f2f)",
-        boxShadow: "0px 4px 10px rgba(0,0,0,0.3)",
-      }}
-    >
+    <AppBar position="static" sx={{ background: "linear-gradient(135deg, #b71c1c, #d32f2f)", boxShadow: "0px 4px 10px rgba(0,0,0,0.3)" }}>
       <Toolbar>
-        {/* Logo y Nombre */}
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-          <motion.div
-            whileHover={{ scale: 1.2, rotate: -5 }}
-            transition={{ type: "spring", stiffness: 200 }}
-          >
+          <motion.div whileHover={{ scale: 1.2, rotate: -5 }} transition={{ type: "spring", stiffness: 200 }}>
             <LocalPizzaIcon fontSize="large" sx={{ color: "#ffeb3b" }} />
           </motion.div>
-          <Typography
-            variant="h5"
-            component={Link}
-            to="/"
-            sx={{
-              textDecoration: "none",
-              color: "#ffffff",
-              ml: 1,
-              fontWeight: "bold",
-              letterSpacing: "1px",
-              transition: "color 0.3s ease",
-              "&:hover": { color: "#ffeb3b" },
-            }}
-          >
+          <Typography variant="h5" component={Link} to="/" sx={{ textDecoration: "none", color: "#ffffff", ml: 1, fontWeight: "bold", letterSpacing: "1px", transition: "color 0.3s ease", "&:hover": { color: "#ffeb3b" } }}>
             Mi Pizzería
           </Typography>
         </Box>
-
-        {/* Botones de Navegación con Iconos */}
         <Button component={Link} to="/" sx={navButtonStyle("/")}>
           <HomeIcon fontSize="small" /> Home
         </Button>
-
         {token && (
           <>
             <Button component={Link} to="/cart" sx={navButtonStyle("/cart")}>
               <ShoppingCartIcon fontSize="small" /> Carrito
             </Button>
-            <Button component={Link} to="/user/orders" sx={navButtonStyle("/user/orders")}>
-              <ReceiptLongIcon fontSize="small" /> Mis Pedidos
-            </Button>
+            {/* Mostrar "Mis Pedidos" solo si no es admin */}
+            {!isAdmin && (
+              <Button component={Link} to="/user/orders" sx={navButtonStyle("/user/orders")}>
+                <ReceiptLongIcon fontSize="small" /> Mis Pedidos
+              </Button>
+            )}
             <Button component={Link} to="/profile" sx={navButtonStyle("/profile")}>
               <PersonIcon fontSize="small" /> Perfil
             </Button>
@@ -110,7 +92,6 @@ const Header = () => {
             </Button>
           </>
         )}
-
         {!token && (
           <>
             <Button component={Link} to="/login" sx={navButtonStyle("/login")}>

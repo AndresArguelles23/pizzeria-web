@@ -13,15 +13,13 @@ connectDB();
 
 const app = express();
 
-// Definir orígenes permitidos: desarrollo y producción
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://courageous-moonbeam-7aa0b7.netlify.app"
+  "https://pizzamar.netlify.app"
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
-    // Permitir solicitudes sin origen (como en mobile o curl)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       return callback(new Error("CORS: Origen no permitido"), false);
