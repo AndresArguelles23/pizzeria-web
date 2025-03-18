@@ -11,6 +11,7 @@
 
 # production
 /build
+backend/.env
 
 # misc
 .DS_Store
@@ -32,4 +33,4 @@ Thumbs.db
 .cache/
 .eslintcache
 .parcel-cache/
-public/
+
