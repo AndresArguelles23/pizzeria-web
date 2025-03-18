@@ -1,3 +1,4 @@
+// frontend/src/pages/Home.jsx
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import {
   Container,
@@ -20,7 +21,7 @@ import api from "../services/api";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import useCart from "../hooks/useCart";
-import { AuthContext } from "../context/AuthContext"; // Importamos el contexto de autenticación
+import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -29,17 +30,19 @@ const Home = () => {
   const [category, setCategory] = useState("Todos");
 
   const { addItem } = useCart();
-  const { token } = useContext(AuthContext); // Obtenemos el token del contexto de autenticación
+  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await api.get("/products");
+        // Importante: Llama al endpoint con el prefijo "/api"
+        const res = await api.get("/api/products");
         setProducts(res.data);
       } catch (error) {
         setSnackbar({ open: true, message: "Error al cargar productos", severity: "error" });
+        console.error("Error en fetchProducts:", error);
       } finally {
         setLoading(false);
       }
@@ -57,7 +60,6 @@ const Home = () => {
       setSnackbar({ open: true, message: "Debes iniciar sesión para agregar productos", severity: "warning" });
       return;
     }
-
     addItem(product);
     setSnackbar({ open: true, message: `${product.name} agregado al carrito`, severity: "success" });
   };
@@ -119,7 +121,7 @@ const Home = () => {
                       <Button
                         variant="contained"
                         startIcon={<VisibilityIcon />}
-                        onClick={() => navigate(`/producto/${product._id}`)} // Redirige a detalles del producto
+                        onClick={() => navigate(`/producto/${product._id}`)}
                         sx={{
                           background: "linear-gradient(135deg, #d32f2f, #ff6659)",
                           borderRadius: "6px",
