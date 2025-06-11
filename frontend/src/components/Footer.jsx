@@ -31,7 +31,7 @@ const Footer = () => {
         </Link>
       </Stack>
       <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-        Hecho con ❤️ por TuEmpresa
+        Hecho con por Andres Julian Arguelles Manco
       </Typography>
     </Box>
   );
