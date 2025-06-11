@@ -1,21 +1,21 @@
 // frontend/src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Cart from "./pages/Cart";
-import Profile from "./pages/Profile";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminMetrics  from "./pages/admin/AdminMetrics";
-import AdminProducts from "./pages/admin/AdminProducts";
-import AdminOrders from "./pages/admin/AdminOrders";
-import AdminUsers from "./pages/admin/AdminUsers";
-import ProtectedRoute from "./components/ProtectedRoute";
-import UserDashboard from "./pages/user/UserDashboard";
-import UserProfile from "./pages/user/UserProfile";
-import UserOrders from "./pages/user/UserOrders";
-import UserSettings from "./pages/user/UserSettings";
+const Home = React.lazy(() => import("./pages/Home"));
+const Login = React.lazy(() => import("./pages/Login"));
+const Register = React.lazy(() => import("./pages/Register"));
+const Cart = React.lazy(() => import("./pages/Cart"));
+const Profile = React.lazy(() => import("./pages/Profile"));
+const AdminDashboard = React.lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminMetrics  = React.lazy(() => import("./pages/admin/AdminMetrics"));
+const AdminProducts = React.lazy(() => import("./pages/admin/AdminProducts"));
+const AdminOrders = React.lazy(() => import("./pages/admin/AdminOrders"));
+const AdminUsers = React.lazy(() => import("./pages/admin/AdminUsers"));
+const ProtectedRoute = React.lazy(() => import("./components/ProtectedRoute"));
+const UserDashboard = React.lazy(() => import("./pages/user/UserDashboard"));
+const UserProfile = React.lazy(() => import("./pages/user/UserProfile"));
+const UserOrders = React.lazy(() => import("./pages/user/UserOrders"));
+const UserSettings = React.lazy(() => import("./pages/user/UserSettings"));
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -24,6 +24,7 @@ function App() {
     <Router>
       <Header />
       <main style={{ minHeight: "80vh", padding: "1rem" }}>
+        <React.Suspense fallback={<p>Cargando...</p>}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -42,6 +43,7 @@ function App() {
           <Route path="/user/orders" element={<ProtectedRoute><UserOrders /></ProtectedRoute>} />
           <Route path="/user/settings" element={<ProtectedRoute><UserSettings /></ProtectedRoute>} />
         </Routes>
+        </React.Suspense>
       </main>
       <Footer />
     </Router>

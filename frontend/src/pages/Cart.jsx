@@ -18,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import api from "../services/api";
 import useCart from "../hooks/useCart";
+import usePageMeta from "../hooks/usePageMeta";
 
 const formatPrice = (price) =>
   new Intl.NumberFormat("es-CO", {
@@ -26,6 +27,7 @@ const formatPrice = (price) =>
   }).format(price);
 
 const Cart = () => {
+  usePageMeta("Carrito - Pizzería Moderna", "Revisa los productos seleccionados antes de completar tu pedido");
   const { cart, removeItem, changeQuantity, clearCart, totalPrice } = useCart();
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -104,6 +106,7 @@ const Cart = () => {
                     component="img"
                     src={item.imageUrl || "https://via.placeholder.com/150"}
                     alt={item.name}
+                    loading="lazy"
                     sx={{
                       width: "100%",
                       height: "150px",

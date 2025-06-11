@@ -1,5 +1,6 @@
 // frontend/src/pages/Home.jsx
 import React, { useState, useEffect, useMemo, useContext } from "react";
+import usePageMeta from "../hooks/usePageMeta";
 import {
   Container,
   Grid,
@@ -28,6 +29,7 @@ import useCart from "../hooks/useCart";
 import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
+  usePageMeta("Inicio - Pizzería Moderna", "Explora nuestra carta de pizzas, hamburguesas y bebidas");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
@@ -45,8 +47,16 @@ const Home = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        // Llama al endpoint con el prefijo "/api"
+        const cached = localStorage.getItem("products-cache");
+        const cachedTime = localStorage.getItem("products-cache-time");
+        if (cached && cachedTime && Date.now() - Number(cachedTime) < 1000 * 60 * 30) {
+          setProducts(JSON.parse(cached));
+          setLoading(false);
+          return;
+        }
         const res = await api.get("/api/products");
+        localStorage.setItem("products-cache", JSON.stringify(res.data));
+        localStorage.setItem("products-cache-time", Date.now().toString());
         setProducts(res.data);
       } catch (error) {
         setSnackbar({ open: true, message: "Error al cargar productos", severity: "error" });
@@ -126,6 +136,7 @@ const Home = () => {
                     height="180"
                     image={product.imageUrl || "https://via.placeholder.com/300?text=Sin+Imagen"}
                     alt={product.name}
+                    loading="lazy"
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: "bold" }}>
@@ -140,6 +151,7 @@ const Home = () => {
                       <Button
                         variant="contained"
                         startIcon={<VisibilityIcon />}
+                        aria-label={`Ver detalles de ${product.name}`}
                         onClick={() => handleOpenModal(product)}
                         sx={{
                           background: "linear-gradient(135deg, #d32f2f, #ff6659)",
@@ -161,6 +173,7 @@ const Home = () => {
                       <Button
                         variant="contained"
                         startIcon={<ShoppingCartIcon />}
+                        aria-label={`Agregar ${product.name} al carrito`}
                         onClick={() => handleAddToCart(product)}
                         sx={{
                           background: "linear-gradient(135deg, #f57c00, #ff9800)",
@@ -204,6 +217,7 @@ const Home = () => {
       component="img"
       src={selectedProduct.imageUrl || "https://via.placeholder.com/300?text=Sin+Imagen"}
       alt={selectedProduct.name}
+      loading="lazy"
       sx={{ width: "100%", maxHeight: 250, objectFit: "contain", borderRadius: "4px", mb: 2 }}
     />
     <Typography variant="body1" sx={{ mb: 2 }}>
