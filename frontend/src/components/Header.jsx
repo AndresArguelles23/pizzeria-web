@@ -55,13 +55,13 @@ const Header = () => {
   });
 
   return (
-    <AppBar position="static" sx={{ background: "linear-gradient(135deg, #b71c1c, #d32f2f)", boxShadow: "0px 4px 10px rgba(0,0,0,0.3)" }}>
+    <AppBar component="header" role="banner" position="static" sx={{ background: "linear-gradient(135deg, #b71c1c, #d32f2f)", boxShadow: "0px 4px 10px rgba(0,0,0,0.3)" }}>
       <Toolbar>
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
           <motion.div whileHover={{ scale: 1.2, rotate: -5 }} transition={{ type: "spring", stiffness: 200 }}>
             <LocalPizzaIcon fontSize="large" sx={{ color: "#ffeb3b" }} />
           </motion.div>
-          <Typography variant="h5" component={Link} to="/" sx={{ textDecoration: "none", color: "#ffffff", ml: 1, fontWeight: "bold", letterSpacing: "1px", transition: "color 0.3s ease", "&:hover": { color: "#ffeb3b" } }}>
+          <Typography variant="h5" component={Link} to="/" aria-label="Inicio" sx={{ textDecoration: "none", color: "#ffffff", ml: 1, fontWeight: "bold", letterSpacing: "1px", transition: "color 0.3s ease", "&:hover": { color: "#ffeb3b" } }}>
             Mi Pizzería
           </Typography>
         </Box>

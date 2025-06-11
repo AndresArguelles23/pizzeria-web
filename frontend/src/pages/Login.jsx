@@ -17,8 +17,10 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import usePageMeta from "../hooks/usePageMeta";
 
 const Login = () => {
+  usePageMeta("Iniciar sesión - Pizzería Moderna", "Accede a tu cuenta para gestionar tus pedidos");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
