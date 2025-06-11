@@ -1,6 +1,8 @@
 // frontend/src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 const Home = React.lazy(() => import("./pages/Home"));
 const Login = React.lazy(() => import("./pages/Login"));
 const Register = React.lazy(() => import("./pages/Register"));
@@ -16,8 +18,6 @@ const UserDashboard = React.lazy(() => import("./pages/user/UserDashboard"));
 const UserProfile = React.lazy(() => import("./pages/user/UserProfile"));
 const UserOrders = React.lazy(() => import("./pages/user/UserOrders"));
 const UserSettings = React.lazy(() => import("./pages/user/UserSettings"));
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 
 function App() {
   return (
